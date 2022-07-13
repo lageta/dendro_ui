@@ -39,6 +39,7 @@
     "react-jsx": "^1.0.0",
     "react-leaflet": "^4.0.1",
     "react-perfect-scrollbar": "^1.5.8",
+    "react-phone-input-2": "^2.15.1",
     "react-select": "^5.4.0",
     "react-uuid": "^1.0.2",
     "react-virtualized": "^9.22.3",
