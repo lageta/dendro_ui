@@ -25,7 +25,7 @@ const defaultValues = {
   street: "",
 };
 
-export default function SiteForm({ data, onRemove, disabled }) {
+export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) {
   const MapWithNoSSR = dynamic(() => import("./map/map"), {
     ssr: false,
   });
@@ -76,6 +76,7 @@ export default function SiteForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     } else {
       fetch(`http://localhost:3001/sites/${data.id}`, {
@@ -96,6 +97,7 @@ export default function SiteForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     }
   };

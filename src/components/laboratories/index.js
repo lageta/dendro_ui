@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import ReactVirtualizedTable from "./array/virtualizedTable";
-import { Checkbox, Box, Paper, Grid, Typography } from "@mui/material";
+import { Checkbox, Box, Paper, Grid, Typography, Alert } from "@mui/material";
 import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -53,7 +53,7 @@ export default function Laboratories() {
   const [searchQuery, setSearchQuery] = useState("");
   const [laboratories, setLaboratories] = useState([]);
   const [formList, setFormList] = useState([]);
-
+  const [displayAlert, setDisplayAlert] = useState(false);
   const dataFiltered = filterData(searchQuery, laboratories);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function Laboratories() {
     fetch(`http://localhost:3001/laboratories/${id}`, {
       method: "DELETE",
     }).then((response) => {
-      getLaboratories();
+      setDisplayAlert(true);
     });
   }
 
@@ -169,6 +169,28 @@ export default function Laboratories() {
           <SearchArray searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           <div style={{ padding: 3 }}>
             <ReactVirtualizedTable data={dataFiltered} />
+            {displayAlert == true ? (
+              <Alert
+                action={
+                  <Button
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setLaboratories([]);
+                      getLaboratories();
+                      setDisplayAlert(false);
+                    }}
+                  >
+                    REFRESH
+                  </Button>
+                }
+                variant="outlined"
+                severity="success"
+                color="info"
+              >
+                Data have been changed — Click refresh to sync the changes !
+              </Alert>
+            ) : null}
           </div>
           <div style={{ padding: 10 }}>
             <Button
@@ -213,7 +235,12 @@ export default function Laboratories() {
         >
           {formList.map((value, index) => (
             <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
-              <LaboratoryForm onRemove={onRemove} data={value} disabled={index != 0} />
+              <LaboratoryForm
+                onRemove={onRemove}
+                data={value}
+                disabled={index != 0}
+                setDisplayAlert={setDisplayAlert}
+              />
             </Item>
           ))}
         </Box>

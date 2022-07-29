@@ -17,6 +17,7 @@ import { Users as UsersIcon } from "../icons/users";
 import { XCircle as XCircleIcon } from "../icons/x-circle";
 import { Logo } from "./logo";
 import { NavItem } from "./nav-item";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 const items = [
   {
@@ -41,9 +42,9 @@ const items = [
   },
 
   {
-    href: "/404",
-    icon: <XCircleIcon fontSize="small" />,
-    title: "Error",
+    href: "/import",
+    icon: <UploadFileIcon fontSize="small" />,
+    title: "Import",
   },
 ];
 
@@ -82,12 +83,7 @@ export const DashboardSidebar = (props) => {
           <Box sx={{ p: 3 }}>
             <NextLink href="/" passHref>
               <a>
-                <Logo
-                  sx={{
-                    height: 42,
-                    width: 42,
-                  }}
-                />
+                <Logo />
               </a>
             </NextLink>
           </Box>

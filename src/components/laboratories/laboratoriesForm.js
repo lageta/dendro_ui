@@ -28,7 +28,7 @@ const defaultValues = {
   telephone: "",
 };
 
-export default function LaboratoryForm({ data, onRemove, disabled }) {
+export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAlert }) {
   const {
     handleSubmit,
     reset,
@@ -73,6 +73,7 @@ export default function LaboratoryForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     } else {
       fetch(`http://localhost:3001/laboratories/${data.id}`, {
@@ -93,6 +94,7 @@ export default function LaboratoryForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     }
   };

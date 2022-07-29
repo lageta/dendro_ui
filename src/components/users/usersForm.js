@@ -23,7 +23,7 @@ const defaultValues = {
   firstname: "",
 };
 
-export default function UsersForm({ data, onRemove, disabled }) {
+export default function UsersForm({ data, onRemove, disabled, setDisplayAlert }) {
   const {
     handleSubmit,
     reset,
@@ -62,6 +62,7 @@ export default function UsersForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     } else {
       fetch(`http://localhost:3001/users/${data.id}`, {
@@ -82,6 +83,7 @@ export default function UsersForm({ data, onRemove, disabled }) {
             timer: "1000",
           });
           onRemove(data.id);
+          setDisplayAlert(true);
         });
     }
   };
