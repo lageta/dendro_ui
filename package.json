@@ -27,7 +27,7 @@
     "leaflet": "^1.8.0",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "leaflet-geosearch": "^3.6.1",
-    "next": "^12.0.3-canary.7",
+    "next": "^12.1.0",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
