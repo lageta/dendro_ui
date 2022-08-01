@@ -10,26 +10,25 @@ import Swal from "sweetalert2";
 
 import uuid from "react-uuid";
 import SendIcon from "@mui/icons-material/Send";
+import PhoneInput from "react-phone-input-2";
 
-import dynamic from "next/dynamic";
+import "react-phone-input-2/lib/material.css";
+import { isValid } from "date-fns";
+const Phones = require("../../utils/phoneRegexp");
 
 const defaultValues = {
   buildingNumber: "",
   country: "",
   city: "",
-  elevation: "1",
-  latitude: "0",
-  longitude: "0",
-  name: "test",
+  name: "",
+  description: "",
   state: "",
   street: "",
+  mail: "",
+  telephone: "",
 };
 
-export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, isUpdating }) {
-  const MapWithNoSSR = dynamic(() => import("./map/map"), {
-    ssr: false,
-  });
-
+export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAlert }) {
   const {
     handleSubmit,
     reset,
@@ -42,32 +41,34 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
   });
 
   const onSubmit = (dataToSubmit) => {
-    const newSite = {
-      latitude: latitude,
-      longitude: longitude,
-      elevation: dataToSubmit.elevation,
-      namesite: dataToSubmit.name,
-      countrysite: dataToSubmit.country,
-      statesite: dataToSubmit.state,
-      citysite: dataToSubmit.city == "" ? null : dataToSubmit.city,
-      streetsite: dataToSubmit.street == "" ? null : dataToSubmit.street,
-      buildingnumbersite: dataToSubmit.buildingNumber == "" ? null : dataToSubmit.buildingNumber,
+    const newLab = {
+      buildingnumberlaboratory:
+        dataToSubmit.buildingNumber == "" ? null : dataToSubmit.buildingNumber,
+      countrylaboratory: dataToSubmit.country,
+      citylaboratory: dataToSubmit.city == "" ? null : dataToSubmit.city,
+      namelaboratory: dataToSubmit.name,
+      statelaboratory: dataToSubmit.state,
+      streetlaboratory: dataToSubmit.street == "" ? null : dataToSubmit.street,
+      maillaboratory: dataToSubmit.mail,
+      telephonelaboratory: dataToSubmit.telephone,
+      descriptionlaboratory: dataToSubmit.description,
     };
 
-    if (isUpdating == false) {
-      fetch("http://localhost:3001/sites", {
+    if (data.name == "") {
+      fetch("http://localhost:3001/laboratories", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newSite),
+        body: JSON.stringify(newLab),
       })
         .then((response) => {
           return response.text();
         })
         .then((res) => {
+          console.log(res);
           Swal.fire({
-            title: "Site created !",
+            title: "Laboratory created !",
             icon: "success",
             timer: "1000",
           });
@@ -75,19 +76,20 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
           setDisplayAlert(true);
         });
     } else {
-      fetch(`http://localhost:3001/sites/${data.id}`, {
+      fetch(`http://localhost:3001/laboratories/${data.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newSite),
+        body: JSON.stringify(newLab),
       })
         .then((response) => {
           return response.text();
         })
         .then((res) => {
+          console.log(res);
           Swal.fire({
-            title: "Site updated !",
+            title: "Laboratory updated !",
             icon: "success",
             timer: "1000",
           });
@@ -96,33 +98,27 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
         });
     }
   };
+  const [telephone, setTelephone] = useState();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [countrySelected, setCountrySelected] = useState(control._defaultValues.country ?? "");
   const [stateSelected, setStateSelected] = useState(control._defaultValues.state ?? "");
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
 
   useEffect(() => {
+    setTelephone(control._defaultValues.telephone);
     let dataCountries = Country.getAllCountries();
     setCountries(dataCountries);
-    if (control._defaultValues.country && control._defaultValues.country != "") {
+    if (control._defaultValues.country != "") {
       let country = dataCountries.filter((country) => country.name == countrySelected)[0];
       setCountrySelected(country);
 
-      if (control._defaultValues.state && control._defaultValues.state != "") {
+      if (control._defaultValues.state != "") {
         let dataStates = State.getStatesOfCountry(country.isoCode);
         let state = dataStates.filter((state) => state.name == stateSelected)[0];
 
         setStateSelected(state);
       }
-    }
-    if (control._defaultValues.latitude && control._defaultValues.latitude != "") {
-      setLatitude(control._defaultValues.latitude);
-    }
-    if (control._defaultValues.longitude && control._defaultValues.longitude != "") {
-      setLongitude(control._defaultValues.longitude);
     }
   }, []);
 
@@ -143,11 +139,6 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
       }
     }
   }, [stateSelected]);
-
-  const createMarker = (latlng) => {
-    setLatitude("" + latlng.lat);
-    setLongitude("" + latlng.lng);
-  };
 
   const containCountries = (value) => {
     var test = false;
@@ -179,6 +170,11 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
     }
     return true;
   };
+
+  const isValidPhoneNumber = (value) => {
+    return value.length > 2;
+  };
+
   return (
     <div>
       <Stack
@@ -188,10 +184,10 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
         spacing={8}
         divider={<Divider orientation="horizontal" flexItem />}
       >
-        {isUpdating == false ? (
-          <Typography variant="h3">Site creation </Typography>
+        {data.name == "" ? (
+          <Typography variant="h3">Laboratory creation </Typography>
         ) : (
-          <Typography variant="h3">Update site</Typography>
+          <Typography variant="h3">Update laboratory</Typography>
         )}
       </Stack>
 
@@ -218,6 +214,69 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
               ></TextField>
             )}
           />
+
+          <Controller
+            name="description"
+            control={control}
+            render={({ field: { ref, onChange, ...field } }) => (
+              <TextField
+                label="Description"
+                multiline
+                rows={4}
+                variant="filled"
+                fullWidth
+                inputRef={ref}
+                onChange={onChange}
+                disabled={disabled}
+                {...field}
+              ></TextField>
+            )}
+          />
+
+          <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
+            <Controller
+              name="mail"
+              control={control}
+              rules={{
+                required: true,
+                pattern: /^[^ ]+@[^ ]+\.[a-z]{2,3}$/,
+              }}
+              render={({ field: { ref, onChange, ...field } }) => (
+                <TextField
+                  label="Mail"
+                  variant="filled"
+                  required
+                  fullWidth
+                  inputRef={ref}
+                  onChange={onChange}
+                  disabled={disabled}
+                  error={!!errors?.mail}
+                  helperText={!!errors?.mail ? "Please enter a valid mail adress" : ""}
+                  {...field}
+                ></TextField>
+              )}
+            />
+            <Controller
+              name="telephone"
+              control={control}
+              rules={{
+                required: true,
+                validate: isValidPhoneNumber,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <PhoneInput
+                  country="be"
+                  onChange={(value) => {
+                    setTelephone(value);
+                    onChange(value);
+                  }}
+                  value={telephone}
+                />
+              )}
+            />
+          </Stack>
+          {errors?.telephone ? <li>Please enter a correct phone number</li> : null}
+
           <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
             <Controller
               name="country"
@@ -309,6 +368,7 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
               name="city"
               control={control}
               rules={{
+                required: true,
                 validate: containCities,
               }}
               render={({ field: { onChange, value } }) => (
@@ -334,6 +394,7 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
                         variant="filled"
                         error={!!errors?.city}
                         helperText={!!errors?.city ? "Select a city in the list" : ""}
+                        required
                         onChange={onChange}
                       />
                     );
@@ -381,70 +442,6 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
               )}
             />
           </Stack>
-          <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
-            <Controller
-              name="elevation"
-              control={control}
-              render={({ field: { ref, value, onChange, ...field } }) => (
-                <TextField
-                  label="Elevation"
-                  variant="filled"
-                  required
-                  type="number"
-                  fullWidth
-                  inputRef={ref}
-                  onChange={onChange}
-                  disabled={disabled}
-                  error={value == ""}
-                  value={value}
-                  {...field}
-                ></TextField>
-              )}
-            />
-            <Controller
-              name="latitude"
-              control={control}
-              render={({ field: { ref, onChange, value, ...field } }) => (
-                <TextField
-                  label="Latitude"
-                  variant="filled"
-                  type="number"
-                  required
-                  fullWidth
-                  onChange={(e) => setLatitude(e.target.value)}
-                  value={latitude}
-                  error={latitude == "" || latitude == 0}
-                  disabled={disabled}
-                  {...field}
-                ></TextField>
-              )}
-            />
-            <Controller
-              name="longitude"
-              control={control}
-              render={({ field: { ref, onChange, value, ...field } }) => (
-                <TextField
-                  label="Longitude"
-                  variant="filled"
-                  required
-                  type="number"
-                  fullWidth
-                  onChange={(e) => setLongitude(e.target.value)}
-                  value={longitude}
-                  error={longitude == "" || longitude == 0}
-                  disabled={disabled}
-                  {...field}
-                ></TextField>
-              )}
-            />
-          </Stack>
-          {disabled ? null : (
-            <main>
-              <div id="map">
-                <MapWithNoSSR onClick={createMarker} position={[latitude, longitude]} />
-              </div>
-            </main>
-          )}
         </Stack>
         <Stack
           direction="row"
@@ -473,10 +470,8 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
               errors?.country ||
               errors?.state ||
               errors?.city ||
-              latitude == "" ||
-              latitude == 0 ||
-              longitude == "" ||
-              longitude == 0
+              errors?.mail ||
+              errors?.telephone
             }
           >
             Send

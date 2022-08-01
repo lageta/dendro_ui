@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import SiteForm from "./siteForm";
+import LaboratoryForm from "./usersForm";
 import uuid from "react-uuid";
 
 const SearchArray = ({ setSearchQuery }) => (
@@ -42,76 +42,76 @@ const SearchArray = ({ setSearchQuery }) => (
     </form>
   </div>
 );
-export default function Sites() {
+export default function Users() {
   const filterData = (query, data) => {
     if (!query) {
       return data;
     } else {
-      return data.filter((site) => site.namesite.toLowerCase().includes(query.toLowerCase()));
+      return data.filter((user) => user.nameuser.toLowerCase().includes(query.toLowerCase()));
     }
   };
   const [searchQuery, setSearchQuery] = useState("");
-  const [sites, setSites] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formList, setFormList] = useState([]);
   const [displayAlert, setDisplayAlert] = useState(false);
 
-  const dataFiltered = filterData(searchQuery, sites);
+  const dataFiltered = filterData(searchQuery, users);
 
   useEffect(() => {
-    getSites();
+    getUsers();
   }, []);
 
-  function deleteSite(id) {
-    fetch(`http://localhost:3001/sites/${id}`, {
+  function deleteUser(id) {
+    fetch(`http://localhost:3001/users/${id}`, {
       method: "DELETE",
     }).then((response) => {
       setDisplayAlert(true);
     });
   }
 
-  function getSites() {
-    fetch("http://localhost:3001/sites").then((response) => {
+  function getUsers() {
+    fetch("http://localhost:3001/users").then((response) => {
       response.json().then((response) => {
         var data = response;
-        data.forEach((site) => {
-          site.deleteButton = (
+        data.forEach((user) => {
+          user.deleteButton = (
             <IconButton
               aria-label="delete"
               color="error"
-              onClick={() => deleteAlert(site.siteid, site.namesite)}
+              onClick={() => deleteAlert(user.userid, user.nameuser)}
             >
               <DeleteIcon />
             </IconButton>
           );
-          site.editButton = (
+          user.editButton = (
             <IconButton
               aria-label="delete"
               color="primary"
               onClick={() => {
-                editSite(site);
+                editUser(user);
               }}
             >
               <EditIcon />
             </IconButton>
           );
         });
-        setSites(data);
+        setUsers(data);
       });
     });
   }
 
   const deleteAlert = (id, name) => {
     Swal.fire({
-      title: "Deleting a site !",
-      text: "Do you really want to delete definnitvely the site : " + name,
+      title: "Deleting an user !",
+      text: "Do you really want to delete definitively the user: " + name,
       icon: "warning",
       confirmButtonText: "yes",
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteSite(id);
+        deleteUser(id);
         Swal.fire({
-          title: "Site deleted !",
+          title: "User deleted !",
           icon: "success",
           timer: "1000",
         });
@@ -134,21 +134,16 @@ export default function Sites() {
     setFormList([...formList].filter((value) => value.id != id));
   };
 
-  const editSite = (site) => {
+  const editUser = (user) => {
     if (formList.length < 1) {
       let tab = [...formList];
 
       tab.push({
-        id: site.siteid,
-        buildingNumber: site.buildingnumbersite,
-        country: site.countrysite,
-        city: site.citysite,
-        elevation: site.elevation,
-        latitude: site.latitude,
-        longitude: site.longitude,
-        name: site.namesite.trim(),
-        state: site.statesite,
-        street: site.streetsite,
+        id: user.userid,
+        name: user.nameuser,
+        firstname: user.firstnameuser,
+        mail: user.mailuser,
+        telephone: user.telephoneuser,
       });
       setFormList(tab);
     }
@@ -156,7 +151,7 @@ export default function Sites() {
 
   return (
     <div>
-      {sites.length != 0 ? (
+      {users.length != 0 ? (
         <div
           style={{
             display: "flex",
@@ -166,7 +161,7 @@ export default function Sites() {
             padding: 20,
           }}
         >
-          <Typography variant="h1">Sites </Typography>
+          <Typography variant="h1">Users </Typography>
           <SearchArray searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           <div style={{ padding: 3 }}>
             <ReactVirtualizedTable data={dataFiltered} />
@@ -177,8 +172,8 @@ export default function Sites() {
                     color="inherit"
                     size="small"
                     onClick={() => {
-                      setSites([]);
-                      getSites();
+                      setUsers([]);
+                      getUsers();
                       setDisplayAlert(false);
                     }}
                   >
@@ -202,15 +197,10 @@ export default function Sites() {
                     ...formList,
                     {
                       id: uuid(),
-                      buildingnumber: null,
-                      country: "",
-                      city: "",
-                      elevation: "",
-                      latitude: "",
-                      longitude: "",
+                      firstname: "",
                       name: "",
-                      state: "",
-                      street: "",
+                      mail: "",
+                      telephone: "",
                     },
                   ];
                   setFormList(newList);
@@ -237,12 +227,11 @@ export default function Sites() {
         >
           {formList.map((value, index) => (
             <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
-              <SiteForm
+              <LaboratoryForm
                 onRemove={onRemove}
                 data={value}
                 disabled={index != 0}
                 setDisplayAlert={setDisplayAlert}
-                isUpdating={value.name == "" ? false : true}
               />
             </Item>
           ))}

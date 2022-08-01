@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import SiteForm from "./siteForm";
+import LaboratoryForm from "./laboratoriesForm";
 import uuid from "react-uuid";
 
 const SearchArray = ({ setSearchQuery }) => (
@@ -42,76 +42,75 @@ const SearchArray = ({ setSearchQuery }) => (
     </form>
   </div>
 );
-export default function Sites() {
+export default function Laboratories() {
   const filterData = (query, data) => {
     if (!query) {
       return data;
     } else {
-      return data.filter((site) => site.namesite.toLowerCase().includes(query.toLowerCase()));
+      return data.filter((lab) => lab.namelaboratory.toLowerCase().includes(query.toLowerCase()));
     }
   };
   const [searchQuery, setSearchQuery] = useState("");
-  const [sites, setSites] = useState([]);
+  const [laboratories, setLaboratories] = useState([]);
   const [formList, setFormList] = useState([]);
   const [displayAlert, setDisplayAlert] = useState(false);
-
-  const dataFiltered = filterData(searchQuery, sites);
+  const dataFiltered = filterData(searchQuery, laboratories);
 
   useEffect(() => {
-    getSites();
+    getLaboratories();
   }, []);
 
-  function deleteSite(id) {
-    fetch(`http://localhost:3001/sites/${id}`, {
+  function deleteLaboratory(id) {
+    fetch(`http://localhost:3001/laboratories/${id}`, {
       method: "DELETE",
     }).then((response) => {
       setDisplayAlert(true);
     });
   }
 
-  function getSites() {
-    fetch("http://localhost:3001/sites").then((response) => {
+  function getLaboratories() {
+    fetch("http://localhost:3001/laboratories").then((response) => {
       response.json().then((response) => {
         var data = response;
-        data.forEach((site) => {
-          site.deleteButton = (
+        data.forEach((lab) => {
+          lab.deleteButton = (
             <IconButton
               aria-label="delete"
               color="error"
-              onClick={() => deleteAlert(site.siteid, site.namesite)}
+              onClick={() => deleteAlert(lab.laboratoryid, lab.namelaboratory)}
             >
               <DeleteIcon />
             </IconButton>
           );
-          site.editButton = (
+          lab.editButton = (
             <IconButton
               aria-label="delete"
               color="primary"
               onClick={() => {
-                editSite(site);
+                editLaboratory(lab);
               }}
             >
               <EditIcon />
             </IconButton>
           );
         });
-        setSites(data);
+        setLaboratories(data);
       });
     });
   }
 
   const deleteAlert = (id, name) => {
     Swal.fire({
-      title: "Deleting a site !",
-      text: "Do you really want to delete definnitvely the site : " + name,
+      title: "Deleting a laboratory !",
+      text: "Do you really want to delete definitively the laboratory: " + name,
       icon: "warning",
       confirmButtonText: "yes",
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteSite(id);
+        deleteLaboratory(id);
         Swal.fire({
-          title: "Site deleted !",
+          title: "Laboratory deleted !",
           icon: "success",
           timer: "1000",
         });
@@ -134,21 +133,21 @@ export default function Sites() {
     setFormList([...formList].filter((value) => value.id != id));
   };
 
-  const editSite = (site) => {
+  const editLaboratory = (lab) => {
     if (formList.length < 1) {
       let tab = [...formList];
 
       tab.push({
-        id: site.siteid,
-        buildingNumber: site.buildingnumbersite,
-        country: site.countrysite,
-        city: site.citysite,
-        elevation: site.elevation,
-        latitude: site.latitude,
-        longitude: site.longitude,
-        name: site.namesite.trim(),
-        state: site.statesite,
-        street: site.streetsite,
+        id: lab.laboratoryid,
+        buildingNumber: lab.buildingnumberlaboratory,
+        country: lab.countrylaboratory,
+        city: lab.citylaboratory,
+        name: lab.namelaboratory,
+        description: lab.descriptionlaboratory,
+        state: lab.statelaboratory,
+        street: lab.streetlaboratory,
+        mail: lab.maillaboratory,
+        telephone: lab.telephonelaboratory,
       });
       setFormList(tab);
     }
@@ -156,7 +155,7 @@ export default function Sites() {
 
   return (
     <div>
-      {sites.length != 0 ? (
+      {laboratories.length != 0 ? (
         <div
           style={{
             display: "flex",
@@ -166,7 +165,7 @@ export default function Sites() {
             padding: 20,
           }}
         >
-          <Typography variant="h1">Sites </Typography>
+          <Typography variant="h1">laboratories </Typography>
           <SearchArray searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
           <div style={{ padding: 3 }}>
             <ReactVirtualizedTable data={dataFiltered} />
@@ -177,8 +176,8 @@ export default function Sites() {
                     color="inherit"
                     size="small"
                     onClick={() => {
-                      setSites([]);
-                      getSites();
+                      setLaboratories([]);
+                      getLaboratories();
                       setDisplayAlert(false);
                     }}
                   >
@@ -202,15 +201,14 @@ export default function Sites() {
                     ...formList,
                     {
                       id: uuid(),
-                      buildingnumber: null,
+                      buildingNumber: "",
                       country: "",
                       city: "",
-                      elevation: "",
-                      latitude: "",
-                      longitude: "",
                       name: "",
                       state: "",
                       street: "",
+                      mail: "",
+                      telephone: "",
                     },
                   ];
                   setFormList(newList);
@@ -237,12 +235,11 @@ export default function Sites() {
         >
           {formList.map((value, index) => (
             <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
-              <SiteForm
+              <LaboratoryForm
                 onRemove={onRemove}
                 data={value}
                 disabled={index != 0}
                 setDisplayAlert={setDisplayAlert}
-                isUpdating={value.name == "" ? false : true}
               />
             </Item>
           ))}
