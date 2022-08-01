@@ -141,12 +141,6 @@ export default function convertFh(file, callback) {
           case "Elev":
             site.elevation = attribute[1];
             break;
-          case "Country":
-            site.country = attribute[1];
-            break;
-          case "State":
-            site.state = attribute[1];
-            break;
         }
       }
 

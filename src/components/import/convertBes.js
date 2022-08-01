@@ -121,6 +121,7 @@ export default function convertBes(file, callback) {
 
       callback([site, resWood]);
     } catch (err) {
+      console.error(err);
       Swal.fire({
         icon: "error",
         title: "Oops...",
