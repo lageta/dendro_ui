@@ -13,6 +13,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import LaboratoryForm from "./usersForm";
 import uuid from "react-uuid";
+const api = require("../../utils/API");
 
 const SearchArray = ({ setSearchQuery }) => (
   <div
@@ -62,41 +63,42 @@ export default function Users() {
   }, []);
 
   function deleteUser(id) {
-    fetch(`http://localhost:3001/users/${id}`, {
-      method: "DELETE",
-    }).then((response) => {
+    api.deleteUser(id, (response) => {
       setDisplayAlert(true);
+      Swal.fire({
+        title: "User deleted !",
+        icon: "success",
+        timer: "1000",
+      });
     });
   }
 
   function getUsers() {
-    fetch("http://localhost:3001/users").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        data.forEach((user) => {
-          user.deleteButton = (
-            <IconButton
-              aria-label="delete"
-              color="error"
-              onClick={() => deleteAlert(user.userid, user.nameuser)}
-            >
-              <DeleteIcon />
-            </IconButton>
-          );
-          user.editButton = (
-            <IconButton
-              aria-label="delete"
-              color="primary"
-              onClick={() => {
-                editUser(user);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          );
-        });
-        setUsers(data);
+    api.getUsers((response) => {
+      var data = response;
+      data.forEach((user) => {
+        user.deleteButton = (
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => deleteAlert(user.userid, user.nameuser)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        );
+        user.editButton = (
+          <IconButton
+            aria-label="delete"
+            color="primary"
+            onClick={() => {
+              editUser(user);
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        );
       });
+      setUsers(data);
     });
   }
 
@@ -110,11 +112,6 @@ export default function Users() {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteUser(id);
-        Swal.fire({
-          title: "User deleted !",
-          icon: "success",
-          timer: "1000",
-        });
       } else if (result.isDenied) {
         // nothing
       }

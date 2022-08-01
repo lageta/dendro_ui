@@ -21,6 +21,7 @@ import uuid from "react-uuid";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+const api = require("../../utils/API");
 
 import {
   Paper,
@@ -31,6 +32,7 @@ import {
   Divider,
   Grid,
   Box,
+  Alert,
 } from "@mui/material";
 import WoodForm from "../woods/woodsForm";
 import SiteForm from "../sites/siteForm";
@@ -77,43 +79,33 @@ export default function Import() {
   }, [formListWood]);
 
   function getUsers() {
-    fetch("http://localhost:3001/users").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setUsers(data);
-      });
+    api.getUsers((response) => {
+      var data = response;
+      setUsers(data);
     });
   }
   function getSites() {
-    fetch("http://localhost:3001/sites").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setSites(data);
-      });
+    api.getSites((response) => {
+      var data = response;
+      setSites(data);
     });
   }
   function getKeywords() {
-    fetch("http://localhost:3001/keywords").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setKeywords(data);
-      });
+    api.getKeywords((response) => {
+      var data = response;
+      setKeywords(data);
     });
   }
   function getSpecies() {
-    fetch("http://localhost:3001/species").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setSpecies(data);
-      });
+    api.getSpecies((response) => {
+      var data = response;
+      setSpecies(data);
     });
   }
   function getLaboratories() {
-    fetch("http://localhost:3001/laboratories").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setLaboratories(data);
-      });
+    api.getLaboratories((response) => {
+      var data = response;
+      setLaboratories(data);
     });
   }
 
@@ -493,6 +485,11 @@ export default function Import() {
           >
             Cancel
           </Button>
+          {formListSite.length > 3 ? (
+            <Alert variant="outlined" severity="warning" color="warning">
+              {formListSite.length - 3} — Site are hidden !
+            </Alert>
+          ) : null}
           <Grid container direction="column" justifyContent="space-evenly" alignItems="center">
             <Box
               sx={{
@@ -503,21 +500,30 @@ export default function Import() {
                 gap: 2,
               }}
             >
-              {formListSite.map((value, index) => (
-                <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
-                  <SiteForm
-                    onRemove={(id) => {
-                      setFormListSite([...formListSite].filter((value) => value.id != id));
-                    }}
-                    data={value}
-                    disabled={index != 0}
-                    setDisplayAlert={(e) => {}}
-                    isUpdating={false}
-                  />
-                </Item>
-              ))}
+              {formListSite.map((value, index) =>
+                index < 5 ? (
+                  <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
+                    <SiteForm
+                      onRemove={(id) => {
+                        setFormListSite([...formListSite].filter((value) => value.id != id));
+                      }}
+                      data={value}
+                      disabled={index != 0}
+                      setDisplayAlert={(e) => {
+                        getSites();
+                      }}
+                      isUpdating={false}
+                    />
+                  </Item>
+                ) : null
+              )}
             </Box>
           </Grid>
+          {formListWood.length > 5 ? (
+            <Alert variant="outlined" severity="warning" color="warning">
+              {formListWood.length - 5} — Woods are hidden !
+            </Alert>
+          ) : null}
           <Grid container direction="column" justifyContent="space-evenly" alignItems="center">
             <Box
               sx={{

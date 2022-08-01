@@ -14,7 +14,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import WoodForm from "./woodsForm";
 import uuid from "react-uuid";
-import { get } from "react-hook-form";
+const api = require("../../utils/API");
 
 const SearchArray = ({ setSearchQuery }) => (
   <div
@@ -215,60 +215,50 @@ export default function Woods() {
   };
 
   function deleteWood(id) {
-    fetch(`http://localhost:3001/woods/${id}`, {
-      method: "DELETE",
-    }).then((response) => {
-      alert(response);
+    api.deleteWood(id, (response) => {
+      Swal.fire({
+        title: "Wood deleted !",
+        icon: "success",
+        timer: "1000",
+      });
       setDisplayAlert(true);
     });
   }
 
   function getWoods() {
-    fetch("http://localhost:3001/woods").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setWoods(data);
-      });
+    api.getWoods((response) => {
+      var data = response;
+      setWoods(data);
     });
   }
   function getUsers() {
-    fetch("http://localhost:3001/users").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setUsers(data);
-      });
+    api.getUsers((response) => {
+      var data = response;
+      setUsers(data);
     });
   }
   function getSites() {
-    fetch("http://localhost:3001/sites").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setSites(data);
-      });
+    api.getSites((response) => {
+      var data = response;
+      setSites(data);
     });
   }
   function getKeywords() {
-    fetch("http://localhost:3001/keywords").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setKeywords(data);
-      });
+    api.getKeywords((response) => {
+      var data = response;
+      setKeywords(data);
     });
   }
   function getSpecies() {
-    fetch("http://localhost:3001/species").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setSpecies(data);
-      });
+    api.getSpecies((response) => {
+      var data = response;
+      setSpecies(data);
     });
   }
   function getLaboratories() {
-    fetch("http://localhost:3001/laboratories").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        setLaboratories(data);
-      });
+    api.getLaboratories((response) => {
+      var data = response;
+      setLaboratories(data);
     });
   }
   const deleteAlert = (id, name) => {
@@ -281,11 +271,6 @@ export default function Woods() {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteWood(id);
-        Swal.fire({
-          title: "Wood deleted !",
-          icon: "success",
-          timer: "1000",
-        });
       } else if (result.isDenied) {
         // nothing
       }

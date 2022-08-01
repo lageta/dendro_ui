@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Skeleton, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import { Stack, Divider, Autocomplete, Button, Checkbox, Grid, IconButton } from "@mui/material";
@@ -8,20 +8,16 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Chip from "@mui/material/Chip";
 import { styled } from "@mui/material/styles";
 // Latest version - v3.0.0 with Tree Shaking to reduce bundle size
-import { Country, State, City, Icon } from "country-state-city";
 import Swal from "sweetalert2";
 
-import uuid from "react-uuid";
 import SendIcon from "@mui/icons-material/Send";
-import PhoneInput from "react-phone-input-2";
 
 import "react-phone-input-2/lib/material.css";
-import { isValid } from "date-fns";
-const Phones = require("../../utils/phoneRegexp");
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { isNaN } from "formik";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+const api = require("../../utils/API");
 
 const defaultValues = {
   name: "",
@@ -102,49 +98,16 @@ export default function WoodForm({
       laboratories: labIds,
     };
 
-    console.log(newWood);
-
     if (!isUpdating) {
-      fetch("http://localhost:3001/woods", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newWood),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          Swal.fire({
-            title: "Wood created !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.createWood(newWood, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     } else {
-      fetch(`http://localhost:3001/woods/${data.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newWood),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            title: "Wood updated !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.editWood(data.id, newWood, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     }
   };
 

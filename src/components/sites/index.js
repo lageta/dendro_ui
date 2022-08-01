@@ -10,6 +10,7 @@ import { Checkbox, Box, Paper, Grid, Typography, Alert } from "@mui/material";
 import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
+const api = require("../../utils/API");
 
 import SiteForm from "./siteForm";
 import uuid from "react-uuid";
@@ -62,41 +63,42 @@ export default function Sites() {
   }, []);
 
   function deleteSite(id) {
-    fetch(`http://localhost:3001/sites/${id}`, {
-      method: "DELETE",
-    }).then((response) => {
+    api.deleteSite(id, (response) => {
+      Swal.fire({
+        title: "Site deleted !",
+        icon: "success",
+        timer: "1000",
+      });
       setDisplayAlert(true);
     });
   }
 
   function getSites() {
-    fetch("http://localhost:3001/sites").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        data.forEach((site) => {
-          site.deleteButton = (
-            <IconButton
-              aria-label="delete"
-              color="error"
-              onClick={() => deleteAlert(site.siteid, site.namesite)}
-            >
-              <DeleteIcon />
-            </IconButton>
-          );
-          site.editButton = (
-            <IconButton
-              aria-label="delete"
-              color="primary"
-              onClick={() => {
-                editSite(site);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          );
-        });
-        setSites(data);
+    api.getSites((response) => {
+      var data = response;
+      data.forEach((site) => {
+        site.deleteButton = (
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => deleteAlert(site.siteid, site.namesite)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        );
+        site.editButton = (
+          <IconButton
+            aria-label="delete"
+            color="primary"
+            onClick={() => {
+              editSite(site);
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        );
       });
+      setSites(data);
     });
   }
 
@@ -110,11 +112,6 @@ export default function Sites() {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteSite(id);
-        Swal.fire({
-          title: "Site deleted !",
-          icon: "success",
-          timer: "1000",
-        });
       } else if (result.isDenied) {
         // nothing
       }

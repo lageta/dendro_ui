@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import uuid from "react-uuid";
 import SendIcon from "@mui/icons-material/Send";
 import PhoneInput from "react-phone-input-2";
+const api = require("../../utils/API");
 
 import "react-phone-input-2/lib/material.css";
 import { isValid } from "date-fns";
@@ -55,47 +56,15 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
     };
 
     if (data.name == "") {
-      fetch("http://localhost:3001/laboratories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newLab),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            title: "Laboratory created !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.createLaboratory(newLab, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     } else {
-      fetch(`http://localhost:3001/laboratories/${data.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newLab),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            title: "Laboratory updated !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.editLaboratory(data.id, newLab, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     }
   };
   const [telephone, setTelephone] = useState();
