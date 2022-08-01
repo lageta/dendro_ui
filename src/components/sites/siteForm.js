@@ -25,12 +25,10 @@ const defaultValues = {
   street: "",
 };
 
-export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) {
+export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, isUpdating }) {
   const MapWithNoSSR = dynamic(() => import("./map/map"), {
     ssr: false,
   });
-
-  console.log(data);
 
   const {
     handleSubmit,
@@ -42,7 +40,6 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
   } = useForm({
     defaultValues: data || defaultValues,
   });
-  console.log(control);
 
   const onSubmit = (dataToSubmit) => {
     const newSite = {
@@ -57,7 +54,7 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
       buildingnumbersite: dataToSubmit.buildingNumber == "" ? null : dataToSubmit.buildingNumber,
     };
 
-    if (data.name == "") {
+    if (isUpdating == false) {
       fetch("http://localhost:3001/sites", {
         method: "POST",
         headers: {
@@ -69,7 +66,6 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
           return response.text();
         })
         .then((res) => {
-          console.log(res);
           Swal.fire({
             title: "Site created !",
             icon: "success",
@@ -90,7 +86,6 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
           return response.text();
         })
         .then((res) => {
-          console.log(res);
           Swal.fire({
             title: "Site updated !",
             icon: "success",
@@ -112,21 +107,21 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
   useEffect(() => {
     let dataCountries = Country.getAllCountries();
     setCountries(dataCountries);
-    if (control._defaultValues.country != "") {
+    if (control._defaultValues.country && control._defaultValues.country != "") {
       let country = dataCountries.filter((country) => country.name == countrySelected)[0];
       setCountrySelected(country);
 
-      if (control._defaultValues.state != "") {
+      if (control._defaultValues.state && control._defaultValues.state != "") {
         let dataStates = State.getStatesOfCountry(country.isoCode);
         let state = dataStates.filter((state) => state.name == stateSelected)[0];
 
         setStateSelected(state);
       }
     }
-    if (control._defaultValues.latitude != "") {
+    if (control._defaultValues.latitude && control._defaultValues.latitude != "") {
       setLatitude(control._defaultValues.latitude);
     }
-    if (control._defaultValues.longitude != "") {
+    if (control._defaultValues.longitude && control._defaultValues.longitude != "") {
       setLongitude(control._defaultValues.longitude);
     }
   }, []);
@@ -193,7 +188,7 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert }) 
         spacing={8}
         divider={<Divider orientation="horizontal" flexItem />}
       >
-        {data.name == "" ? (
+        {isUpdating == false ? (
           <Typography variant="h3">Site creation </Typography>
         ) : (
           <Typography variant="h3">Update site</Typography>

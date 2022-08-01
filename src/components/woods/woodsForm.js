@@ -50,6 +50,7 @@ export default function WoodForm({
   dataSpecies,
   dataKeywords,
   setDisplayAlert,
+  isUpdating,
 }) {
   const {
     handleSubmit,
@@ -103,7 +104,7 @@ export default function WoodForm({
 
     console.log(newWood);
 
-    if (data.name == "") {
+    if (!isUpdating) {
       fetch("http://localhost:3001/woods", {
         method: "POST",
         headers: {
@@ -115,8 +116,6 @@ export default function WoodForm({
           return response.text();
         })
         .then((res) => {
-          console.log(res);
-          alert(res);
           Swal.fire({
             title: "Wood created !",
             icon: "success",
@@ -197,7 +196,7 @@ export default function WoodForm({
         spacing={8}
         divider={<Divider orientation="horizontal" flexItem />}
       >
-        {data.name == "" ? (
+        {isUpdating == false ? (
           <Typography variant="h3">Wood creation </Typography>
         ) : (
           <Typography variant="h3">Update wood</Typography>
@@ -364,6 +363,7 @@ export default function WoodForm({
                   options={dataLaboratories}
                   disableCloseOnSelect
                   getOptionLabel={(option) => option.namelaboratory ?? option}
+                  disabled={disabled}
                   renderOption={(props, option, { selected }) => (
                     <li {...props}>
                       <Checkbox
@@ -506,6 +506,7 @@ export default function WoodForm({
                   ]}
                   disableCloseOnSelect
                   style={{ width: 500 }}
+                  disabled={disabled}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -536,6 +537,7 @@ export default function WoodForm({
                   multiple
                   options={dataKeywords}
                   disableCloseOnSelect
+                  disabled={disabled}
                   getOptionLabel={(option) => option.libellekeyword}
                   renderOption={(props, option, { selected }) => (
                     <li {...props}>
@@ -555,7 +557,12 @@ export default function WoodForm({
                       variant="filled"
                       label="Keywords"
                       placeholder="Violin"
-                      helperText="Select up to five keywords"
+                      error={!!errors?.keywords}
+                      helperText={
+                        !!errors?.keywords
+                          ? "Select at least one keyword"
+                          : "Select up to five keywords"
+                      }
                     />
                   )}
                   onChange={(event, values, reason) => {
@@ -648,6 +655,7 @@ export default function WoodForm({
             </Typography>
             <IconButton
               color="primary"
+              disabled={disabled}
               onClick={(e) => {
                 navigator.clipboard.readText().then((res, err) => {
                   var re = /\s+/;
@@ -709,6 +717,7 @@ export default function WoodForm({
               >
                 <Button
                   variant="contained"
+                  disabled={disabled}
                   onClick={() => {
                     if (value) {
                       const val = value.trim();
@@ -723,6 +732,7 @@ export default function WoodForm({
                 </Button>
                 <Button
                   variant="contained"
+                  disabled={disabled}
                   color="warning"
                   onClick={() => {
                     let tab = values;
@@ -733,6 +743,7 @@ export default function WoodForm({
                   Remove last
                 </Button>
                 <Button
+                  disabled={disabled}
                   variant="contained"
                   color="error"
                   onClick={() => {
@@ -769,11 +780,16 @@ export default function WoodForm({
             disabled={
               disabled ||
               errors?.name ||
-              errors?.country ||
-              errors?.state ||
-              errors?.city ||
-              errors?.mail ||
-              errors?.telephone
+              errors?.specie ||
+              errors?.author ||
+              errors?.reviewer ||
+              errors?.laboratories ||
+              errors?.site ||
+              errors?.research ||
+              errors?.length ||
+              errors?.sapwood ||
+              errors?.dateEnd ||
+              errors?.keywords
             }
           >
             Send

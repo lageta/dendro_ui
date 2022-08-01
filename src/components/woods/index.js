@@ -431,6 +431,7 @@ export default function Woods() {
                 dataSpecies={species}
                 dataKeywords={keywords}
                 setDisplayAlert={setDisplayAlert}
+                isUpdating={value.name == "" ? false : true}
               />
             </Item>
           ))}

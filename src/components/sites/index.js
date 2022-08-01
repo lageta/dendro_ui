@@ -242,6 +242,7 @@ export default function Sites() {
                 data={value}
                 disabled={index != 0}
                 setDisplayAlert={setDisplayAlert}
+                isUpdating={value.name == "" ? false : true}
               />
             </Item>
           ))}
