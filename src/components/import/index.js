@@ -19,6 +19,8 @@ import Switch from "@mui/material/Switch";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import uuid from "react-uuid";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 import {
   Paper,
@@ -35,10 +37,21 @@ import SiteForm from "../sites/siteForm";
 import convertFh from "./convertFH";
 
 export default function Import() {
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const [open, setOpen] = useState(false);
   const [files, setFiles] = useState([]);
+  const [allFiles, setAllFiles] = useState([]);
   const [createSite, setCreateSite] = useState(false);
+  //
+  const [selectedSpecie, setSelectedSpecie] = useState({});
   const [selectedSite, setSelectedSite] = useState({});
+  const [selectedAuthor, setSelectedAuthor] = useState({});
+  const [selectedReviewer, setSelectedReviewer] = useState({});
+  const [selectedLaboratories, setSelectedLaboratories] = useState([]);
+  const [selectedKeywords, setSelectedKeywords] = useState([]);
+  const [research, setResearch] = useState("");
+  //
   const [format, setFormat] = useState("");
   const [laboratories, setLaboratories] = useState([]);
   const [sites, setSites] = useState([]);
@@ -114,10 +127,10 @@ export default function Import() {
   const handleSubmit = (files, allFiles) => {
     setOpen(true);
     setFiles(files);
+    setAllFiles(allFiles);
     /*for (let file of files) {
       convertFh(file.file, (res) => console.log(res));
     }*/
-    allFiles.forEach((f) => f.remove());
   };
 
   const handleImport = () => {
@@ -126,20 +139,12 @@ export default function Import() {
       case "Besançon / BesançonDCCD":
         for (let file of files) {
           convertBes(file.file, (res) => {
-            if (selectedSite && !createSite) {
-              let data = res[1];
-              data.forEach((wood) => {
-                wood.site = selectedSite;
-              });
-              setFormListWood(data);
-            } else {
-              setFormListWood(res[1]);
-            }
+            setFormListWood(populateWoods(res[1]));
             if (createSite) {
               setFormListSite([res[0]]);
             }
-
             setHideDropzone(true);
+            allFiles.forEach((f) => f.remove());
           });
         }
         break;
@@ -147,27 +152,49 @@ export default function Import() {
       case "FH":
         for (let file of files) {
           convertFh(file.file, (res) => {
-            console.log(res);
-            if (selectedSite && !createSite) {
-              let data = res[1];
-              data.forEach((wood) => {
-                wood.site = selectedSite;
-              });
-              setFormListWood(data);
-            } else {
-              setFormListWood(res[1]);
-            }
+            setFormListWood(populateWoods(res[1]));
             if (createSite) {
               setFormListSite([res[0]]);
             }
-
             setHideDropzone(true);
+            allFiles.forEach((f) => f.remove());
           });
         }
         break;
     }
   };
 
+  const populateWoods = (woods) => {
+    woods.forEach((wood) => {
+      if (selectedSite && selectedSite.namesite != "" && !createSite) {
+        wood.site = selectedSite;
+      }
+      if (selectedSpecie && selectedSpecie.libellespecie != "") {
+        wood.specie = selectedSpecie;
+      }
+
+      if (selectedAuthor && selectedAuthor.nameuser != "") {
+        wood.author = selectedAuthor;
+      }
+
+      if (selectedReviewer && selectedReviewer != "") {
+        wood.reviewer = selectedReviewer;
+      }
+
+      if (selectedLaboratories && selectedLaboratories.length > 0) {
+        wood.laboratories = selectedLaboratories;
+      }
+
+      if (selectedKeywords && selectedKeywords.length > 0) {
+        wood.keywords = selectedKeywords;
+      }
+
+      if (research && research.length > 0) {
+        wood.research = research;
+      }
+    });
+    return woods;
+  };
   const Item = styled(Paper)(({ theme, color }) => ({
     ...theme.typography.body2,
     textAlign: "center",
@@ -225,7 +252,6 @@ export default function Import() {
                   Please select the format of the file. If you want to create a site with the file
                   you are importing, select 'Create site' (up-right) else select an existing one.
                 </DialogContentText>
-
                 <InputLabel id="select-label">Format</InputLabel>
                 <Select
                   style={{ width: "20vw" }}
@@ -239,6 +265,10 @@ export default function Import() {
                   <MenuItem value={"Besançon / BesançonDCCD"}>Besançon / BesançonDCCD</MenuItem>
                   <MenuItem value={"FH"}>FH</MenuItem>
                 </Select>
+                <DialogContentText>
+                  Shared propreties between the woods of the files you are importing. The propreties
+                  can be editated individually later.
+                </DialogContentText>
                 {createSite == false ? (
                   <>
                     <Autocomplete
@@ -255,7 +285,6 @@ export default function Import() {
                             variant="filled"
                             value={selectedSite.namesite ?? ""}
                             error={selectedSite.length <= 0}
-                            required
                           />
                         );
                       }}
@@ -263,20 +292,188 @@ export default function Import() {
                         console.log(values);
                         if (values && values.siteid) {
                           setSelectedSite(values);
+                        } else {
+                          setSelectedSite({});
                         }
                       }}
                       value={selectedSite.namesite ? selectedSite : ""}
                     />
                   </>
                 ) : null}
+                <Autocomplete
+                  options={species}
+                  getOptionLabel={(option) => option.libellespecie ?? option}
+                  isOptionEqualToValue={(option, value) => option == selectedSpecie}
+                  sx={{ width: "20vw" }}
+                  clearOnEscape
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        {...params}
+                        label="Specie"
+                        margin="normal"
+                        variant="filled"
+                        value={selectedSpecie.libellespecie}
+                      />
+                    );
+                  }}
+                  onChange={(event, values, reason) => {
+                    if (values && values.specieid) {
+                      setSelectedSpecie(values);
+                    } else {
+                      setSelectedSpecie({});
+                    }
+                  }}
+                  onReset={() => console.log(reset)}
+                  value={selectedSpecie.libellespecie ? selectedSpecie : ""}
+                />
+                <Autocomplete
+                  options={users}
+                  getOptionLabel={(option) => option.nameuser ?? option}
+                  isOptionEqualToValue={(option, value) => option == selectedAuthor}
+                  sx={{ width: "20vw" }}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        {...params}
+                        label="Author"
+                        margin="normal"
+                        variant="filled"
+                        value={selectedAuthor.nameuser}
+                      />
+                    );
+                  }}
+                  onChange={(event, values, reason) => {
+                    if (values && values.userid) {
+                      setSelectedAuthor(values);
+                    } else {
+                      setSelectedAuthor({});
+                    }
+                  }}
+                  value={selectedAuthor.nameuser ? selectedAuthor : ""}
+                />
+
+                <Autocomplete
+                  options={users}
+                  getOptionLabel={(option) => option.nameuser ?? option}
+                  isOptionEqualToValue={(option, value) => option == selectedReviewer}
+                  sx={{ width: "20vw" }}
+                  renderInput={(params) => {
+                    return (
+                      <TextField
+                        {...params}
+                        label="Reviewer"
+                        margin="normal"
+                        variant="filled"
+                        value={selectedReviewer.nameuser}
+                      />
+                    );
+                  }}
+                  onChange={(event, values, reason) => {
+                    console.log(values);
+                    if (values && values.userid) {
+                      setSelectedReviewer(values);
+                    } else {
+                      setSelectedReviewer({});
+                    }
+                  }}
+                  value={selectedReviewer.nameuser ? selectedReviewer : ""}
+                />
+
+                <Autocomplete
+                  multiple
+                  options={laboratories}
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option.namelaboratory ?? option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option.namelaboratory}
+                    </li>
+                  )}
+                  sx={{ width: "20vw" }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="filled"
+                      label="Laboratories"
+                      placeholder="Université de Liège..."
+                    />
+                  )}
+                  onChange={(event, values, reason) => {
+                    if (values.length >= 0) {
+                      setSelectedLaboratories(values);
+                    }
+                  }}
+                  value={selectedLaboratories}
+                />
+                <Autocomplete
+                  options={[
+                    "Archaeology",
+                    "Built Heritage",
+                    "Climatology",
+                    "Dendroecology",
+                    "Furniture",
+                    "Mobilia",
+                    "Musical Instrument",
+                    "Other",
+                    "Painting",
+                    "Paleo-vegetation",
+                    "Ship Archaeology",
+                    "Standing Trees",
+                    "Woodcarving",
+                  ]}
+                  disableCloseOnSelect
+                  style={{ width: "20vw" }}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="filled" label="Research" />
+                  )}
+                  onChange={(event, values, reason) => {
+                    setResearch(values);
+                  }}
+                  value={research}
+                />
+                <Autocomplete
+                  multiple
+                  options={keywords}
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option.libellekeyword}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option.libellekeyword}
+                    </li>
+                  )}
+                  style={{ width: "20vw" }}
+                  renderInput={(params) => (
+                    <TextField {...params} variant="filled" label="Keywords" placeholder="Violin" />
+                  )}
+                  onChange={(event, values, reason) => {
+                    if (
+                      values.length >= 0 &&
+                      ((!selectedKeywords.length < 5 && values.length < 5) ||
+                        selectedKeywords.length < 5)
+                    ) {
+                      setSelectedKeywords(values);
+                    }
+                  }}
+                  value={selectedKeywords}
+                />
               </Stack>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button
-                onClick={handleImport}
-                disabled={(!selectedSite.namesite && !createSite) || format.length <= 0}
-              >
+              <Button onClick={handleImport} disabled={format.length <= 0}>
                 Import
               </Button>
             </DialogActions>
@@ -290,6 +487,8 @@ export default function Import() {
             onClick={() => {
               setHideDropzone(false);
               setFiles([]);
+              setFormListSite([]);
+              setFormListWood([]);
             }}
           >
             Cancel
