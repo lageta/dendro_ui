@@ -14,6 +14,8 @@ import PhoneInput from "react-phone-input-2";
 
 import "react-phone-input-2/lib/material.css";
 import { isValid } from "date-fns";
+const api = require("../../utils/API");
+
 const Phones = require("../../utils/phoneRegexp");
 
 const defaultValues = {
@@ -44,47 +46,15 @@ export default function UsersForm({ data, onRemove, disabled, setDisplayAlert })
     };
 
     if (data.name == "") {
-      fetch("http://localhost:3001/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUser),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            title: "User created !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.createUser(newUser, (res) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     } else {
-      fetch(`http://localhost:3001/users/${data.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUser),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          console.log(res);
-          Swal.fire({
-            title: "Users updated !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.editUser(data.id, newUser, (res) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     }
   };
   const [telephone, setTelephone] = useState();

@@ -10,6 +10,7 @@ import { Checkbox, Box, Paper, Grid, Typography, Alert } from "@mui/material";
 import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
+const api = require("../../utils/API");
 
 import LaboratoryForm from "./laboratoriesForm";
 import uuid from "react-uuid";
@@ -61,41 +62,42 @@ export default function Laboratories() {
   }, []);
 
   function deleteLaboratory(id) {
-    fetch(`http://localhost:3001/laboratories/${id}`, {
-      method: "DELETE",
-    }).then((response) => {
+    api.deleteLaboratory(id, (res) => {
+      Swal.fire({
+        title: "Laboratory deleted !",
+        icon: "success",
+        timer: "1000",
+      });
       setDisplayAlert(true);
     });
   }
 
   function getLaboratories() {
-    fetch("http://localhost:3001/laboratories").then((response) => {
-      response.json().then((response) => {
-        var data = response;
-        data.forEach((lab) => {
-          lab.deleteButton = (
-            <IconButton
-              aria-label="delete"
-              color="error"
-              onClick={() => deleteAlert(lab.laboratoryid, lab.namelaboratory)}
-            >
-              <DeleteIcon />
-            </IconButton>
-          );
-          lab.editButton = (
-            <IconButton
-              aria-label="delete"
-              color="primary"
-              onClick={() => {
-                editLaboratory(lab);
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          );
-        });
-        setLaboratories(data);
+    api.getLaboratories((response) => {
+      var data = response;
+      data.forEach((lab) => {
+        lab.deleteButton = (
+          <IconButton
+            aria-label="delete"
+            color="error"
+            onClick={() => deleteAlert(lab.laboratoryid, lab.namelaboratory)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        );
+        lab.editButton = (
+          <IconButton
+            aria-label="delete"
+            color="primary"
+            onClick={() => {
+              editLaboratory(lab);
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        );
       });
+      setLaboratories(data);
     });
   }
 
@@ -109,11 +111,6 @@ export default function Laboratories() {
     }).then((result) => {
       if (result.isConfirmed) {
         deleteLaboratory(id);
-        Swal.fire({
-          title: "Laboratory deleted !",
-          icon: "success",
-          timer: "1000",
-        });
       } else if (result.isDenied) {
         // nothing
       }

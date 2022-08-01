@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 
 import uuid from "react-uuid";
 import SendIcon from "@mui/icons-material/Send";
-
+const api = require("../../utils/API");
 import dynamic from "next/dynamic";
 
 const defaultValues = {
@@ -55,45 +55,15 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
     };
 
     if (isUpdating == false) {
-      fetch("http://localhost:3001/sites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newSite),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          Swal.fire({
-            title: "Site created !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.createSite(newSite, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     } else {
-      fetch(`http://localhost:3001/sites/${data.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newSite),
-      })
-        .then((response) => {
-          return response.text();
-        })
-        .then((res) => {
-          Swal.fire({
-            title: "Site updated !",
-            icon: "success",
-            timer: "1000",
-          });
-          onRemove(data.id);
-          setDisplayAlert(true);
-        });
+      api.editSite(data.id, newSite, (response) => {
+        onRemove(data.id);
+        setDisplayAlert(true);
+      });
     }
   };
   const [countries, setCountries] = useState([]);
