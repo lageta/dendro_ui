@@ -28,7 +28,7 @@ const Dashboard = () => {
             </IconButton>
           </Stack>
           <Head>
-            <title>Dendro</title>
+            <title>Dendro UI</title>
           </Head>
           <Box
             component="main"
