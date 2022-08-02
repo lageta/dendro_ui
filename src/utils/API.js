@@ -1,8 +1,8 @@
 import Swal from "sweetalert2";
-
+const adress = "https://dendroapi.alwaysdata.net/";
 //USERS
 function getUsers(callback) {
-  fetch("http://localhost:3001/users")
+  fetch(adress + "users")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -20,7 +20,7 @@ function getUsers(callback) {
 }
 
 function createUser(newUser, callback) {
-  fetch("http://localhost:3001/users", {
+  fetch(adress + "users", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -99,7 +99,7 @@ function deleteUser(id, callback) {
 
 //SITES
 function getSites(callback) {
-  fetch("http://localhost:3001/sites")
+  fetch(adress + "sites")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -117,7 +117,7 @@ function getSites(callback) {
 }
 
 function createSite(newSite, callback) {
-  fetch("http://localhost:3001/sites", {
+  fetch(adress + "sites", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -196,7 +196,7 @@ function deleteSite(id, callback) {
 
 //KEYWORDS
 function getKeywords(callback) {
-  fetch("http://localhost:3001/keywords")
+  fetch(adress + "keywords")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -215,7 +215,7 @@ function getKeywords(callback) {
 
 //SPECIE
 function getSpecies(callback) {
-  fetch("http://localhost:3001/species")
+  fetch(adress + "species")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -234,7 +234,7 @@ function getSpecies(callback) {
 
 // LAB
 function getLaboratories(callback) {
-  fetch("http://localhost:3001/laboratories")
+  fetch(adress + "laboratories")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -252,7 +252,7 @@ function getLaboratories(callback) {
 }
 
 function createLaboratory(newLab, callback) {
-  fetch("http://localhost:3001/laboratories", {
+  fetch(adress + "laboratories", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -331,7 +331,7 @@ function deleteLaboratory(id, callback) {
 //WOODS
 
 function getWoods(callback) {
-  fetch("http://localhost:3001/woods")
+  fetch(adress + "woods")
     .then((response) => {
       response.json().then((response) => {
         callback(response);
@@ -349,7 +349,7 @@ function getWoods(callback) {
 }
 
 function createWood(newWood, callback) {
-  fetch("http://localhost:3001/woods", {
+  fetch(adress + "woods", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
