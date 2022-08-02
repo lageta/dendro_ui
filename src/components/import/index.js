@@ -242,7 +242,7 @@ export default function Import() {
               <Stack justifyContent="space-between" alignItems="flex-start" spacing={2}>
                 <DialogContentText>
                   Please select the format of the file. If you want to create a site with the file
-                  you are importing, select 'Create site' (up-right) else select an existing one.
+                  you are importing, select Create site (up-right) else select an existing one.
                 </DialogContentText>
                 <InputLabel id="select-label">Format</InputLabel>
                 <Select
