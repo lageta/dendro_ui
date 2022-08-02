@@ -50,7 +50,7 @@ function createUser(newUser, callback) {
 }
 
 function editUser(id, newUser, callback) {
-  fetch(`http://localhost:3001/users/${id}`, {
+  fetch(adress + `users/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -80,7 +80,7 @@ function editUser(id, newUser, callback) {
 }
 
 function deleteUser(id, callback) {
-  fetch(`http://localhost:3001/users/${id}`, {
+  fetch(adress + `users/${id}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -147,7 +147,7 @@ function createSite(newSite, callback) {
 }
 
 function editSite(id, newSite, callback) {
-  fetch(`http://localhost:3001/sites/${id}`, {
+  fetch(adress + `sites/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -177,7 +177,7 @@ function editSite(id, newSite, callback) {
 }
 
 function deleteSite(id, callback) {
-  fetch(`http://localhost:3001/sites/${id}`, {
+  fetch(adress + `sites/${id}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -282,7 +282,7 @@ function createLaboratory(newLab, callback) {
 }
 
 function editLaboratory(id, newLab, callback) {
-  fetch(`http://localhost:3001/laboratories/${id}`, {
+  fetch(adress + `laboratories/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -311,7 +311,7 @@ function editLaboratory(id, newLab, callback) {
     );
 }
 function deleteLaboratory(id, callback) {
-  fetch(`http://localhost:3001/laboratories/${id}`, {
+  fetch(adress + `laboratories/${id}`, {
     method: "DELETE",
   })
     .then((response) => {
@@ -379,7 +379,7 @@ function createWood(newWood, callback) {
 }
 
 function editWood(id, newWood, callback) {
-  fetch(`http://localhost:3001/woods/${id}`, {
+  fetch(adress + `woods/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -409,7 +409,7 @@ function editWood(id, newWood, callback) {
 }
 
 function deleteWood(id, callback) {
-  fetch(`http://localhost:3001/woods/${id}`, {
+  fetch(adress + `woods/${id}`, {
     method: "DELETE",
   })
     .then((response) => {
