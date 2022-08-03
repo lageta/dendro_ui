@@ -12,14 +12,12 @@ import Import from "src/components/import";
 import { Box, Button, Container, Grid, Paper, Stack, Typography, IconButton } from "@mui/material";
 import { useSession, signIn, signOut } from "next-auth/react";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { authorizedUsers } from "src/utils/authorizedUsers";
 
 const Dashboard = () => {
   const { data: session } = useSession();
   if (session) {
-    if (
-      session.user.email == "axel.laget@gmail.com" ||
-      session.user.email == "labvince@gmail.com"
-    ) {
+    if (authorizedUsers.includes(session.user.email)) {
       return (
         <>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={3}>
