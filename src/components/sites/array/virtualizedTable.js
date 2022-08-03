@@ -169,8 +169,9 @@ export default function ReactVirtualizedTable(props) {
   return (
     <Paper
       style={{
-        height: 800,
+        height: "50vh",
         maxWidth: "full-content",
+        width: 900,
         maxHeight: "none",
         // overflow: "scroll",
       }}
@@ -181,30 +182,7 @@ export default function ReactVirtualizedTable(props) {
         rowGetter={({ index }) => props.data[index]}
         columns={[
           {
-            width: 100,
-            label: "Id",
-            dataKey: "siteid",
-          },
-          {
             width: 200,
-            label: "Latitude",
-            dataKey: "latitude",
-            numeric: true,
-          },
-          {
-            width: 200,
-            label: "Longitude",
-            dataKey: "longitude",
-            numeric: true,
-          },
-          {
-            width: 200,
-            label: "Elevation",
-            dataKey: "elevation",
-            numeric: true,
-          },
-          {
-            width: 300,
             label: "Name",
             dataKey: "namesite",
           },
@@ -213,27 +191,13 @@ export default function ReactVirtualizedTable(props) {
             label: "Country",
             dataKey: "countrysite",
           },
+
           {
-            width: 300,
-            label: "State",
-            dataKey: "statesite",
-          },
-          {
-            width: 300,
+            width: 200,
             label: "City",
             dataKey: "citysite",
           },
-          {
-            width: 300,
-            label: "Street",
-            dataKey: "streetsite",
-          },
-          {
-            width: 300,
-            label: "Building number",
-            dataKey: "buildingnumbersite",
-            numeric: true,
-          },
+
           {
             width: 20,
             label: "",

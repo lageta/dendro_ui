@@ -63,6 +63,7 @@ export default function Import() {
   const [hideDropzone, setHideDropzone] = useState(false);
   const [formListWood, setFormListWood] = useState([]);
   const [formListSite, setFormListSite] = useState([]);
+  const [woodsString, setWoodsString] = useState([]);
 
   useEffect(() => {
     getKeywords();
@@ -135,6 +136,7 @@ export default function Import() {
             if (createSite) {
               setFormListSite([res[0]]);
             }
+            setWoodsString(res[2]);
             setHideDropzone(true);
             allFiles.forEach((f) => f.remove());
           });
@@ -148,6 +150,7 @@ export default function Import() {
             if (createSite) {
               setFormListSite([res[0]]);
             }
+            setWoodsString(res[2]);
             setHideDropzone(true);
             allFiles.forEach((f) => f.remove());
           });
@@ -194,6 +197,7 @@ export default function Import() {
     backgroundColor: color,
     // height: 60,
     // lineHeight: "60px",
+    width: "45vw",
     padding: 60,
   }));
   return (
@@ -536,25 +540,32 @@ export default function Import() {
             >
               {formListWood.map((value, index) =>
                 index < 5 ? (
-                  <Item
-                    key={uuid()}
-                    color={!(index != 0 || formListSite.length > 0) ? "primary" : "#eeeeee"}
-                  >
-                    <WoodForm
-                      onRemove={(id) => {
-                        setFormListWood([...formListWood].filter((value) => value.id != id));
-                      }}
-                      data={value}
-                      disabled={index != 0 || formListSite.length > 0}
-                      dataLaboratories={laboratories}
-                      dataSites={sites}
-                      dataUsers={users}
-                      dataSpecies={species}
-                      dataKeywords={keywords}
-                      setDisplayAlert={(e) => {}}
-                      isUpdating={false}
-                    />
-                  </Item>
+                  <>
+                    <Item
+                      key={uuid()}
+                      color={!(index != 0 || formListSite.length > 0) ? "primary" : "#eeeeee"}
+                    >
+                      <WoodForm
+                        onRemove={(id) => {
+                          setFormListWood([...formListWood].filter((value) => value.id != id));
+                        }}
+                        data={value}
+                        disabled={index != 0 || formListSite.length > 0}
+                        dataLaboratories={laboratories}
+                        dataSites={sites}
+                        dataUsers={users}
+                        dataSpecies={species}
+                        dataKeywords={keywords}
+                        setDisplayAlert={(e) => {}}
+                        isUpdating={false}
+                      />
+                    </Item>
+                    <div>
+                      {woodsString[index].split("\n").map((i, key) => {
+                        return <div key={key}>{i}</div>;
+                      })}
+                    </div>
+                  </>
                 ) : null
               )}
             </Box>

@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import ReactVirtualizedTable from "./array/virtualizedTable";
-import { Checkbox, Box, Paper, Grid, Typography, Alert } from "@mui/material";
+import { Checkbox, Box, Paper, Grid, Typography, Alert, Stack } from "@mui/material";
 import Swal from "sweetalert2";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -162,86 +162,87 @@ export default function Laboratories() {
             padding: 20,
           }}
         >
-          <Typography variant="h1">laboratories </Typography>
-          <SearchArray searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-          <div style={{ padding: 3 }}>
-            <ReactVirtualizedTable data={dataFiltered} />
-            {displayAlert == true ? (
-              <Alert
-                action={
-                  <Button
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setLaboratories([]);
-                      getLaboratories();
-                      setDisplayAlert(false);
-                    }}
-                  >
-                    REFRESH
-                  </Button>
-                }
-                variant="outlined"
-                severity="success"
-                color="info"
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+            <Typography variant="h1">laboratories </Typography>
+            <div style={{ padding: 10 }}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (formList.length < 1) {
+                    const newList = [
+                      ...formList,
+                      {
+                        id: uuid(),
+                        buildingNumber: "",
+                        country: "",
+                        city: "",
+                        name: "",
+                        state: "",
+                        street: "",
+                        mail: "",
+                        telephone: "",
+                      },
+                    ];
+                    setFormList(newList);
+                  }
+                }}
               >
-                Data have been changed — Click refresh to sync the changes !
-              </Alert>
-            ) : null}
-          </div>
-          <div style={{ padding: 10 }}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (formList.length < 1) {
-                  const newList = [
-                    ...formList,
-                    {
-                      id: uuid(),
-                      buildingNumber: "",
-                      country: "",
-                      city: "",
-                      name: "",
-                      state: "",
-                      street: "",
-                      mail: "",
-                      telephone: "",
-                    },
-                  ];
-                  setFormList(newList);
-                }
+                Create
+              </Button>
+            </div>
+          </Stack>
+          <Grid container direction="column" justifyContent="space-evenly" alignItems="flex-start">
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: "background.default",
+                display: "grid",
+                gridTemplateColumns: { md: "1fr 1fr" },
+                gap: 2,
               }}
             >
-              Create
-            </Button>
+              {formList.map((value, index) => (
+                <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
+                  <LaboratoryForm
+                    onRemove={onRemove}
+                    data={value}
+                    disabled={index != 0}
+                    setDisplayAlert={setDisplayAlert}
+                  />
+                </Item>
+              ))}
+            </Box>
+          </Grid>
+          <SearchArray searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          {displayAlert == true ? (
+            <Alert
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setLaboratories([]);
+                    getLaboratories();
+                    setDisplayAlert(false);
+                  }}
+                >
+                  REFRESH
+                </Button>
+              }
+              variant="outlined"
+              severity="success"
+              color="info"
+            >
+              Data have been changed — Click refresh to sync the changes !
+            </Alert>
+          ) : null}
+          <div style={{ padding: 3 }}>
+            <ReactVirtualizedTable data={dataFiltered} />
           </div>
         </div>
       ) : (
         <LinearProgress />
       )}
-
-      <Grid container direction="column" justifyContent="space-evenly" alignItems="center">
-        <Box
-          sx={{
-            p: 2,
-            bgcolor: "background.default",
-            display: "grid",
-            gridTemplateColumns: { md: "1fr 1fr" },
-            gap: 2,
-          }}
-        >
-          {formList.map((value, index) => (
-            <Item key={uuid()} color={index == 0 ? "primary" : "#eeeeee"}>
-              <LaboratoryForm
-                onRemove={onRemove}
-                data={value}
-                disabled={index != 0}
-                setDisplayAlert={setDisplayAlert}
-              />
-            </Item>
-          ))}
-        </Box>
-      </Grid>
     </div>
   );
 }

@@ -175,6 +175,7 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
             }}
             render={({ field: { ref, onChange, ...field } }) => (
               <TextField
+                inputProps={{ autoComplete: "new-password" }}
                 label="Name"
                 variant="filled"
                 required
@@ -204,6 +205,8 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
                   sx={{ width: "50%" }}
                   disabled={disabled}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}
@@ -251,6 +254,8 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
                   }}
                   isOptionEqualToValue={(option, value) => option.name == value}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}
@@ -296,6 +301,8 @@ export default function SiteForm({ data, onRemove, disabled, setDisplayAlert, is
                   }}
                   isOptionEqualToValue={(option, value) => option.name == value}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}

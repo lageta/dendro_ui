@@ -157,7 +157,8 @@ export default function ReactVirtualizedTable(props) {
   return (
     <Paper
       style={{
-        height: "70vh",
+        height: "50vh",
+        width: 900,
         maxHeight: "none",
       }}
     >
@@ -167,53 +168,38 @@ export default function ReactVirtualizedTable(props) {
         rowGetter={({ index }) => props.data[index]}
         columns={[
           {
-            width: "500vw",
-            label: "Id",
-            dataKey: "woodid",
-          },
-          {
-            width: "500vw",
-            label: "Name",
-            dataKey: "namewood",
-          },
-          {
-            width: "500vw",
-            label: "Research",
-            dataKey: "research",
-          },
-          {
-            width: "500vw",
-            label: "Specie",
-            dataKey: "specieToString",
-          },
-          {
-            width: "500vw",
-            label: "Keywords",
-            dataKey: "keywordsToString",
-          },
-          {
-            width: "500vw",
-            label: "Date End",
-            dataKey: "dateend",
-          },
-
-          {
-            width: "500vw",
+            width: 50,
             label: "Dated",
             dataKey: "dated",
           },
 
           {
-            width: "500vw",
+            width: 200,
+            label: "Name",
+            dataKey: "namewood",
+          },
+          {
+            width: 200,
+            label: "Research",
+            dataKey: "research",
+          },
+          {
+            width: 200,
+            label: "Specie",
+            dataKey: "specieToString",
+          },
+
+          {
+            width: 20,
             label: "",
           },
           {
-            width: "500vw",
+            width: 60,
             label: "",
             dataKey: "editButton",
           },
           {
-            width: "500vw",
+            width: 60,
             label: "",
             dataKey: "deleteButton",
           },
