@@ -16,7 +16,10 @@ import LogoutIcon from "@mui/icons-material/Logout";
 const Dashboard = () => {
   const { data: session } = useSession();
   if (session) {
-    if (session.user.email == "axel.laget@gmail.com") {
+    if (
+      session.user.email == "axel.laget@gmail.com" ||
+      session.user.email == "labvince@gmail.com"
+    ) {
       return (
         <>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={3}>
