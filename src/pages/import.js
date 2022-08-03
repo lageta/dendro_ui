@@ -17,7 +17,9 @@ import { authorizedUsers } from "src/utils/authorizedUsers";
 const Dashboard = () => {
   const { data: session } = useSession();
   if (session) {
+
     if (authorizedUsers.includes(session.user.email)) {
+
       return (
         <>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={3}>

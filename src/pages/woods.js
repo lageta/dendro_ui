@@ -32,7 +32,10 @@ const Dashboard = () => {
             </IconButton>
           </Stack>
           <Head>
+
             <title>Dendro UI</title>
+
+
           </Head>
           <Box
             component="main"
