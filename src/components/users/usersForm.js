@@ -63,10 +63,10 @@ export default function UsersForm({ data, onRemove, disabled, setDisplayAlert })
     setTelephone(control._defaultValues.telephone);
   }, []);
 
-  const isValidPhoneNumber = (value) => {
+  /* const isValidPhoneNumber = (value) => {
     return value.length > 2;
   };
-
+*/
   return (
     <div>
       <Stack
@@ -128,48 +128,48 @@ export default function UsersForm({ data, onRemove, disabled, setDisplayAlert })
             )}
           />
 
-          <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
-            <Controller
-              name="mail"
-              control={control}
-              rules={{
-                required: true,
-                pattern: /^[^ ]+@[^ ]+\.[a-z]{2,3}$/,
-              }}
-              render={({ field: { ref, onChange, ...field } }) => (
-                <TextField
-                  label="Mail"
-                  variant="filled"
-                  required
-                  fullWidth
-                  inputRef={ref}
-                  onChange={onChange}
-                  disabled={disabled}
-                  error={!!errors?.mail}
-                  helperText={!!errors?.mail ? "Please enter a valid mail adress" : ""}
-                  {...field}
-                ></TextField>
-              )}
-            />
-            <Controller
-              name="telephone"
-              control={control}
-              rules={{
-                required: true,
-                validate: isValidPhoneNumber,
-              }}
-              render={({ field: { onChange, value } }) => (
-                <PhoneInput
-                  country="be"
-                  onChange={(value) => {
-                    setTelephone(value);
-                    onChange(value);
-                  }}
-                  value={telephone}
-                />
-              )}
-            />
-          </Stack>
+          <Controller
+            name="mail"
+            control={control}
+            rules={{
+              required: true,
+              pattern: /^[^ ]+@[^ ]+\.[a-z]{2,3}$/,
+            }}
+            render={({ field: { ref, onChange, ...field } }) => (
+              <TextField
+                label="Mail"
+                variant="filled"
+                required
+                fullWidth
+                inputRef={ref}
+                onChange={onChange}
+                disabled={disabled}
+                error={!!errors?.mail}
+                helperText={!!errors?.mail ? "Please enter a valid mail adress" : ""}
+                {...field}
+              ></TextField>
+            )}
+          />
+          <Controller
+            name="telephone"
+            control={control}
+            rules={
+              {
+                // required: true,
+                //validate: isValidPhoneNumber,
+              }
+            }
+            render={({ field: { onChange, value } }) => (
+              <PhoneInput
+                country="be"
+                onChange={(value) => {
+                  setTelephone(value);
+                  onChange(value);
+                }}
+                value={telephone}
+              />
+            )}
+          />
           {errors?.telephone ? <li>Please enter a correct phone number</li> : null}
         </Stack>
         <Stack

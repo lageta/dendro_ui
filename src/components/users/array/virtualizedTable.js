@@ -169,8 +169,8 @@ export default function ReactVirtualizedTable(props) {
   return (
     <Paper
       style={{
-        height: 800,
-        maxWidth: "full-content",
+        height: "50vh",
+        width: 700,
         maxHeight: "none",
         // overflow: "scroll",
       }}
@@ -181,11 +181,6 @@ export default function ReactVirtualizedTable(props) {
         rowGetter={({ index }) => props.data[index]}
         columns={[
           {
-            width: 100,
-            label: "Id",
-            dataKey: "userid",
-          },
-          {
             width: 200,
             label: "Name",
             dataKey: "nameuser",
@@ -194,17 +189,6 @@ export default function ReactVirtualizedTable(props) {
             width: 200,
             label: "Firstname",
             dataKey: "firstnameuser",
-          },
-
-          {
-            width: 200,
-            label: "Mail",
-            dataKey: "mailuser",
-          },
-          {
-            width: 300,
-            label: "Telephone",
-            dataKey: "telephoneuser",
           },
 
           {

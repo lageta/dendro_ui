@@ -1,3 +1,4 @@
+import { string } from "prop-types";
 import uuid from "react-uuid";
 import Swal from "sweetalert2";
 
@@ -82,7 +83,8 @@ export default function convertFh(file, callback) {
 
             case "SapWoodRings":
               if (!isNaN(Number(attribute[1]))) {
-                sapwood = length - attribute[1];
+                //  sapwood = length - attribute[1];
+                sapwood = attribute[1];
               }
               break;
 
@@ -143,8 +145,9 @@ export default function convertFh(file, callback) {
             break;
         }
       }
-
-      callback([site, resWood]);
+      let string = text.split("HEADER:");
+      string.shift();
+      callback([site, resWood, string]);
     } catch (err) {
       Swal.fire({
         icon: "error",

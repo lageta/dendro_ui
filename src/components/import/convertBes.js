@@ -119,7 +119,7 @@ export default function convertBes(file, callback) {
         }
       }
 
-      callback([site, resWood]);
+      callback([site, resWood, text.split(";")]);
     } catch (err) {
       console.error(err);
       Swal.fire({

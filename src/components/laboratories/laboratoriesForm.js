@@ -140,10 +140,10 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
     return true;
   };
 
-  const isValidPhoneNumber = (value) => {
+  /*const isValidPhoneNumber = (value) => {
     return value.length > 2;
   };
-
+*/
   return (
     <div>
       <Stack
@@ -154,9 +154,9 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
         divider={<Divider orientation="horizontal" flexItem />}
       >
         {data.name == "" ? (
-          <Typography variant="h3">Laboratory creation </Typography>
+          <Typography variant="h4">Laboratory creation </Typography>
         ) : (
-          <Typography variant="h3">Update laboratory</Typography>
+          <Typography variant="h4">Update laboratory</Typography>
         )}
       </Stack>
 
@@ -202,48 +202,47 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
             )}
           />
 
-          <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
-            <Controller
-              name="mail"
-              control={control}
-              rules={{
-                required: true,
-                pattern: /^[^ ]+@[^ ]+\.[a-z]{2,3}$/,
-              }}
-              render={({ field: { ref, onChange, ...field } }) => (
-                <TextField
-                  label="Mail"
-                  variant="filled"
-                  required
-                  fullWidth
-                  inputRef={ref}
-                  onChange={onChange}
-                  disabled={disabled}
-                  error={!!errors?.mail}
-                  helperText={!!errors?.mail ? "Please enter a valid mail adress" : ""}
-                  {...field}
-                ></TextField>
-              )}
-            />
-            <Controller
-              name="telephone"
-              control={control}
-              rules={{
-                required: true,
-                validate: isValidPhoneNumber,
-              }}
-              render={({ field: { onChange, value } }) => (
-                <PhoneInput
-                  country="be"
-                  onChange={(value) => {
-                    setTelephone(value);
-                    onChange(value);
-                  }}
-                  value={telephone}
-                />
-              )}
-            />
-          </Stack>
+          <Controller
+            name="mail"
+            control={control}
+            rules={{
+              //   required: true,
+              pattern: /^[^ ]+@[^ ]+\.[a-z]{2,3}$/,
+            }}
+            render={({ field: { ref, onChange, ...field } }) => (
+              <TextField
+                label="Mail"
+                variant="filled"
+                fullWidth
+                inputRef={ref}
+                onChange={onChange}
+                disabled={disabled}
+                error={!!errors?.mail}
+                helperText={!!errors?.mail ? "Please enter a valid mail adress" : ""}
+                {...field}
+              ></TextField>
+            )}
+          />
+          <Controller
+            name="telephone"
+            control={control}
+            rules={
+              {
+                //  required: true,
+                //validate: isValidPhoneNumber,
+              }
+            }
+            render={({ field: { onChange, value } }) => (
+              <PhoneInput
+                country="be"
+                onChange={(value) => {
+                  setTelephone(value);
+                  onChange(value);
+                }}
+                value={telephone}
+              />
+            )}
+          />
           {errors?.telephone ? <li>Please enter a correct phone number</li> : null}
 
           <Stack direction="row" justifyContent="space-evenly" alignItems="center" spacing={2}>
@@ -262,6 +261,8 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
                   sx={{ width: "50%" }}
                   disabled={disabled}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}
@@ -309,6 +310,8 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
                   }}
                   isOptionEqualToValue={(option, value) => option.name == value}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}
@@ -355,6 +358,8 @@ export default function LaboratoryForm({ data, onRemove, disabled, setDisplayAle
                   }}
                   isOptionEqualToValue={(option, value) => option.name == value}
                   renderInput={(params) => {
+                    const inputProps = params.inputProps;
+                    inputProps.autoComplete = "new-password";
                     return (
                       <TextField
                         {...params}

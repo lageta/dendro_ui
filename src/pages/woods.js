@@ -14,6 +14,7 @@ import Woods from "src/components/woods";
 import { Box, Button, Container, Grid, Paper, Stack, Typography, IconButton } from "@mui/material";
 import { useSession, signIn, signOut } from "next-auth/react";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { authorizedUsers } from "src/utils/authorizedUsers";
 
 const Dashboard = () => {
   const { data: session } = useSession();
@@ -40,7 +41,6 @@ const Dashboard = () => {
             component="main"
             sx={{
               flexGrow: 1,
-              py: 8,
             }}
           >
             <Container maxWidth={false}>

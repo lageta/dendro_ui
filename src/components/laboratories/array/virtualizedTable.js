@@ -169,7 +169,8 @@ export default function ReactVirtualizedTable(props) {
   return (
     <Paper
       style={{
-        height: 800,
+        height: "50vh",
+        width: 900,
         maxWidth: "full-content",
         maxHeight: "none",
         // overflow: "scroll",
@@ -181,67 +182,30 @@ export default function ReactVirtualizedTable(props) {
         rowGetter={({ index }) => props.data[index]}
         columns={[
           {
-            width: 100,
-            label: "Id",
-            dataKey: "laboratoryid",
-          },
-          {
             width: 200,
             label: "Name",
             dataKey: "namelaboratory",
           },
-          {
-            width: 200,
-            label: "Description",
-            dataKey: "descriptionlaboratory",
-          },
-          {
-            width: 200,
-            label: "Mail",
-            dataKey: "maillaboratory",
-          },
-          {
-            width: 300,
-            label: "Telephone",
-            dataKey: "telephonelaboratory",
-          },
+
           {
             width: 200,
             label: "Country",
             dataKey: "countrylaboratory",
           },
+
           {
-            width: 300,
-            label: "State",
-            dataKey: "statelaboratory",
-          },
-          {
-            width: 300,
+            width: 200,
             label: "City",
             dataKey: "citylaboratory",
           },
+
           {
-            width: 300,
-            label: "Street",
-            dataKey: "streetlaboratory",
-          },
-          {
-            width: 300,
-            label: "Building number",
-            dataKey: "buildingnumberlaboratory",
-            numeric: true,
-          },
-          {
-            width: 20,
-            label: "",
-          },
-          {
-            width: 80,
+            width: 60,
             label: "",
             dataKey: "editButton",
           },
           {
-            width: 80,
+            width: 60,
             label: "",
             dataKey: "deleteButton",
           },
